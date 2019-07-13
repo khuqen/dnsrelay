@@ -32,7 +32,7 @@ class Myhandle(socketserver.BaseRequestHandler):
 
     def handle(self):
         data = self.request[0]     
-        resFound, response = dnsProcess(data, cache, config.seq, config.startTime, config.IDtrans, self.client_address, config.debug_level)
+        resFound, response = dnsProcess(data, cache, config.seq, config.startTime, config.IDtrans, self.client_address, config.debug_level, config.file)
         config.seq += 1
         if resFound:
             self.request[1].sendto(response, self.client_address)
@@ -43,7 +43,7 @@ class Myhandle(socketserver.BaseRequestHandler):
             retransmitFlag = False
             try:
                 t_data, addr= udpSocket.recvfrom(1024)
-                _, response = dnsProcess(t_data, cache, config.seq, config.startTime, config.IDtrans, addr, config.debug_level)
+                _, response = dnsProcess(t_data, cache, config.seq, config.startTime, config.IDtrans, addr, config.debug_level, config.file)
                 config.seq += 1
                 self.request[1].sendto(response, self.client_address)
             except socket.timeout:
@@ -59,3 +59,4 @@ if __name__ == "__main__":
     print('Connect successfully to dns server {}.'.format(dnsIpAddr))
     DnsServer = socketserver.ThreadingUDPServer(('', 53), Myhandle)
     DnsServer.serve_forever()
+    config.file.close()

@@ -1,6 +1,5 @@
 import datetime
-
-def dnsProcess(rawData, cache, seq, startTime, IDtrans, addr, debug_level):
+def dnsProcess(rawData, cache, seq, startTime, IDtrans, addr, debug_level, file):
     data = bytearray(rawData)
     datalen = len(data)
     ID = ( data[0] << 8) + data[1]
@@ -33,7 +32,9 @@ def dnsProcess(rawData, cache, seq, startTime, IDtrans, addr, debug_level):
         if resFound == True:
             data[2] = data[2] | 0x80            #change the QR as response type 1
             if '0.0.0.0' == ip:
-                                                #set the RCODE as 3: the name name referenced in the query does not exist.
+                s = str(datetime.datetime.now()) + ' ' + str(addr) + ' ' + str(name)
+                file.write(s+'\n')
+                                                     #set the RCODE as 3: the name name referenced in the query does not exist.
                 data[3] = data[3] & 0xF0                #set the RCODE segment into zero
                 data[3] = data[3] | 0x03                # then filled it as ERROR
 

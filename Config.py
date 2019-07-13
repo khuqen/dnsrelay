@@ -6,4 +6,5 @@ class Config:
         self.seq = 0
         self.IDtrans = {}
         self.startTime = datetime.datetime.now()
+        self.file = open('log.txt', 'a')
 
